@@ -8,16 +8,6 @@ Use case for transfer 0.01 USDC from Sepolia to Babylon. You need to save babylo
 
 
 ```wallets.json``` to save your private key and address babylon.
-```{
-  "wallets": [
-    {
-      "name": "Wallet1",
-      "privatekey": "pk1",
-      "babylonAddress": "bbn....."
-    }
-  ]
-}``` for single wallet use this format
-
 
 ```maxTransaction.txt```
 Change this for increase or decrease of transaction.
