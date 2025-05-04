@@ -19,26 +19,6 @@ for single wallet use this format
   ]
 }```
 
-for multiple wallet use this format
-```{
-  "wallets": [
-    {
-      "name": "Wallet1",
-      "privatekey": "pk1",
-      "babylonAddress": "bbn....."
-    },
-    {
-      "name": "Wallet2",
-      "privatekey": "pk2",
-      "babylonAddress": "bbn....."
-    },
-	{
-      "name": "Wallet2",
-      "privatekey": "pk3",
-      "babylonAddress": "bbn....."
-    }
-  ]
-}```
 
 ```maxTransaction.txt```
 Change this for increase or decrease of transaction.
