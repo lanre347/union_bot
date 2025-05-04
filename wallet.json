@@ -1,0 +1,14 @@
+{
+  "wallets": [
+    {
+      "name": "Wallet1",
+      "privatekey": "pk1",
+      "babylonAddress": "bbn....."
+    },
+    {
+      "name": "Wallet2",
+      "privatekey": "pk2",
+      "babylonAddress": "bbn....."
+    }
+  ]
+}
