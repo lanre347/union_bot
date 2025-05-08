@@ -64,11 +64,8 @@ async function askMaxTransaction() {
 
 async function selectTransactionType() {
   const types = {
-    1: { label: "Holesky → Babylon", method: service.holeskyBabylon },
-    2: { label: "Holesky → Sepolia", method: service.holeskySepolia },
-    3: { label: "Holesky → Xion", method: service.holeskyXion },
-    4: { label: "Sepolia → Babylon", method: service.sepoliaBabylon },
-    5: { label: "Sepolia → Holesky", method: service.sepoliaHolesky },
+    1: { label: "Sepolia → Babylon", method: service.sepoliaBabylon },
+    2: { label: "Sepolia → Holesky", method: service.sepoliaHolesky },
     0: { label: "All", method: null }
   };
 
