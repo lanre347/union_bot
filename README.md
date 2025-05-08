@@ -2,13 +2,9 @@
 
 Need to claim faucet first at ```https://faucet.circle.com```
 
-```node sepolia_holesky.js```
-Use case for transfer 0.01 USDC from Sepolia to Holesky 
+```node union.js```
+Use case for transfer 0.0001 USDC from Sepolia to Holesky and Sepolia to Babylon. You need to save babylon address on wallet.json
 
-```node sepolia_babylon.js```
-Use case for transfer 0.01 USDC from Sepolia to Babylon. You need to save babylon address on wallets.json
+```wallet.json``` to save your private key and address babylon. ```{"wallets": [{"name": "Wallet1","privatekey": "pk1","babylonAddress": "bbn....."}]}``` for single wallet
 
-```wallets.json``` to save your private key and address babylon. ```{"wallets": [{"name": "Wallet1","privatekey": "pk1","babylonAddress": "bbn....."}]}``` for single wallet
 
-```maxTransaction.txt```
-Change this for increase or decrease of transaction.
