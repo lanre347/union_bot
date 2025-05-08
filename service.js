@@ -14,7 +14,6 @@ const unionExplorer = chains.utils.etc.union;
 const timelog = chains.utils.etc.timelog;
 const USDC_ADDRESS = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";
 const contractAddress = "0x5FbE74A283f7954f10AA04C2eDf55578811aeb03";
-const WETH_ADDRESS = "0x94373a4919B3240D86eA41593D5eBa789FEF3848";
 const graphqlEndpoint = "https://graphql.union.build/v1/graphql";
 const selectedWallets = global.selectedWallets || [];
 const wallets = selectedWallets;
@@ -82,33 +81,6 @@ async function checkBalanceAndApproveUSDC(wallet, USDC_ADDRESS, spenderAddress) 
     }
   } else {
   }
-  return true;
-}
-async function checkBalanceAndApproveWETH(wallet, WETH_ADDRESS, spenderAddress) {
-  const WETHContract = new ethers.Contract(WETH_ADDRESS, abi.WETH, wallet);
-  
-  const balance = await WETHContract.balanceOf(wallet.address);
-  if (balance === 0n) {
-    console.log(`🛑 ${wallet.address} has 0 WETH. Please claim faucet first at https://faucet.circle.com`);
-    return false;
-  }
-  const allowance = await WETHContract.allowance(wallet.address, spenderAddress);
-  if (allowance === 0n) {
-    console.log(`✍️ WETH is not allowance. Sending approve transaction....`);
-
-    const approveAmount = ethers.MaxUint256;
-    try {
-      const tx = await WETHContract.approve(spenderAddress, approveAmount);
-      const receipt = await tx.wait();
-      console.log(`✅ Approve confirmed: ${explorer.tx(receipt.hash)}`);
-	  await delay(3000);
-    } catch (err) {
-      console.error(`❌ Approve failed:`, err.message);
-      return false;
-    }
-  } else {
-  }
-
   return true;
 }
 async function sepoliaHolesky() {
