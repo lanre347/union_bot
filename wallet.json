@@ -1,0 +1,19 @@
+{
+  "wallets": [
+    {
+      "name": "Wallet1",
+      "privatekey": "pk1",
+      "babylonAddress": "bbnxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+	{
+      "name": "Wallet2",
+      "privatekey": "pk2",
+      "babylonAddress": "bbnxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+	{
+      "name": "Wallet3",
+      "privatekey": "pk3",
+      "babylonAddress": "bbnxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+  ]
+}
