@@ -11,6 +11,8 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
+let successfulTransactions = 0;
+
 function askQuestion(query) {
   return new Promise(resolve => rl.question(query, resolve));
 }
@@ -22,7 +24,7 @@ async function selectWallets(wallets) {
     console.log(`[${idx + 1}] ${w.name}`);
   });
 
-  let input = await askQuestion("Enter wallet numbers (comma-separated, e.g., 1,2 or 0 for all): ");
+  let input = "1"; // Hardcoded
   let indexes = input
     .split(",")
     .map(i => parseInt(i.trim()))
@@ -53,7 +55,7 @@ async function selectWallets(wallets) {
 }
 
 async function askMaxTransaction() {
-  let input = await askQuestion('Enter number of transactions (default 1 if empty or 0): ');
+  let input = "10"; // Hardcoded
   let value = parseInt(input);
   return isNaN(value) || value <= 0 ? 1 : value;
 }
@@ -70,34 +72,37 @@ async function selectTransactionType() {
     console.log(`[${key}] ${val.label}`);
   });
 
-  let input = await askQuestion("Enter number of transaction type (e.g., 1 or 0 for all): ");
+  let input = "1"; // Hardcoded
   const choice = parseInt(input);
   if (isNaN(choice) || !types[choice]) {
-    console.log("Invalid input. Using default (Holesky → Babylon).");
+    console.log("Invalid input. Using default.");
     return [types[1]];
   }
 
   return choice === 0 ? Object.values(types).filter(t => t.method !== null) : [types[choice]];
 }
 
-// Function to handle the retry logic if the transaction fails due to low gas
-async function executeTransactionWithRetry(method, retries = 3, delay = 3000) {
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    try {
-      await method();
-      return; // Successfully executed, exit function
-    } catch (error) {
-      if (error.message.includes('replacement fee too low') && attempt < retries) {
-        console.log(`[${etc.timelog()}] Attempt ${attempt}: Transaction failed due to low fee. Retrying with higher gas price...`);
-        // Here, increase the gas price in your service logic before retrying
-        await new Promise(resolve => setTimeout(resolve, delay)); // Wait before retry
-      } else {
-        console.error(`[${etc.timelog()}] Attempt ${attempt}: Error - ${error.message}`);
-        if (attempt === retries) {
-          console.log(`[${etc.timelog()}] Max retries reached. Moving to next transaction.`);
-        }
-      }
+// Modified function to force restart on error
+async function executeTransactionSkippingErrors(method) {
+  try {
+    await method();
+    successfulTransactions++;
+    console.log(`[${etc.timelog()}] Transaction succeeded. Total: ${successfulTransactions}`);
+
+    if (successfulTransactions >= 10) {
+      console.log(`[${etc.timelog()}] Completed 10 transactions. Stopping script.`);
+      process.exit(0);  // Optional: exit if 10 transactions are reached
     }
+  } catch (error) {
+    const message = error?.message?.toLowerCase() || "";
+
+    if (message.includes("replacement fee too low") || message.includes("underpriced")) {
+      console.error(`[${etc.timelog()}] Replacement fee too low. Restarting script.`);
+      process.exit(1); // This will cause PM2 to restart the script
+    } else {
+      console.error(`[${etc.timelog()}] Error in transaction: ${message}`);
+    }
+    // Continue either way or handle other errors here
   }
 }
 
@@ -119,13 +124,13 @@ async function runTransactionParallel() {
 
   for (const tx of transactionTypes) {
     console.log(`[${etc.timelog()}] Executing transaction: ${tx.label}`);
-    try {
-      await executeTransactionWithRetry(tx.method); // Using the retry logic here
-    } catch (error) {
-      console.error(`[${etc.timelog()}] Error in ${tx.label}: ${error.message}`);
-      // Continue with next transaction even if one fails after retries
-    }
+    await executeTransactionSkippingErrors(tx.method);
   }
 }
 
-runTransactionParallel();
+function restartEvery12Hours() {
+  runTransactionParallel();
+  setInterval(runTransactionParallel, 43200000);
+}
+
+restartEvery12Hours();
